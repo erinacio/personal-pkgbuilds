@@ -1,0 +1,81 @@
+# Maintainer: Bruno Pagani <archange@archlinux.org>
+
+pkgbase=materia-kde
+pkgname=('materia-blue-kde' 'kvantum-theme-materia-blue')
+pkgver=20180904
+pkgrel=1
+pkgdesc="Materia theme for KDE Plasma 5, blue accent patch"
+arch=('any')
+url="https://github.com/PapirusDevelopmentTeam/${pkgbase}"
+license=('GPL3')
+options=('!strip')
+source=(${pkgbase}-${pkgver}.tar.gz::"${url}/archive/${pkgver}.tar.gz")
+sha256sums=('c3460b11826f20e79532a4649bb785db729afbb1b0981aa972c30661461d9b7e')
+
+prepare() {
+    if [ -f ${pkgbase}-${pkgver}/.prepared ]; then
+        echo 'prepare() may be executed once, restart from stratch'
+        rm -rf ${pkgbase}-${pkgver}
+        tar -xvf ${pkgbase}-${pkgver}.tar.gz
+    fi
+    cd ${pkgbase}-${pkgver}
+    touch .prepared
+    find . -type f -print -exec sed -i -e 's/#009688/#448aff/g' {} \;
+    find . -type f -print -exec sed -i -e 's/=Materia/=MateriaBlue/g' {} \;
+    sed -i -e 's/com.github.varlesh.materia/com.github.varlesh.materiablue/g' plasma/look-and-feel/com.github.varlesh.materia/metadata.desktop
+
+    mv -v aurorae/themes/Materia{,Blue}-Dark
+    mv -v aurorae/themes/MateriaBlue-Dark/Materia{,Blue}-Darkrc
+    mv -v aurorae/themes/Materia{,Blue}-Light
+    mv -v aurorae/themes/MateriaBlue-Light/Materia{,Blue}-Lightrc
+
+    mv -v color-schemes/Materia{,Blue}Dark.colors
+    mv -v color-schemes/Materia{,Blue}Light.colors
+
+    mv -v konsole/Materia{,Blue}.colorscheme
+    mv -v konsole/Materia{,Blue}Dark.colorscheme
+
+    mv -v Kvantum/Materia{,Blue}
+    mv -v Kvantum/MateriaBlue/Materia{,Blue}.kvconfig
+    mv -v Kvantum/MateriaBlue/Materia{,Blue}.svg
+    mv -v Kvantum/Materia{,Blue}Blur
+    mv -v Kvantum/MateriaBlueBlur/Materia{,Blue}Blur.kvconfig
+    mv -v Kvantum/MateriaBlueBlur/Materia{,Blue}Blur.svg
+    mv -v Kvantum/Materia{,Blue}Dark
+    mv -v Kvantum/MateriaBlueDark/Materia{,Blue}Dark.kvconfig
+    mv -v Kvantum/MateriaBlueDark/Materia{,Blue}Dark.svg
+    mv -v Kvantum/Materia{,Blue}Light
+    mv -v Kvantum/MateriaBlueLight/Materia{,Blue}Light.kvconfig
+    mv -v Kvantum/MateriaBlueLight/Materia{,Blue}Light.svg
+
+    mv -v plasma/desktoptheme/Materia{,Blue}
+    mv -v plasma/desktoptheme/Materia{,Blue}-Blur
+    mv -v plasma/look-and-feel/com.github.varlesh.materia{,blue}
+
+    mv -v yakuake/skins/materia{,blue}
+    mv -v yakuake/skins/materia{,blue}-dark
+}
+
+package_materia-blue-kde() {
+    optdepends=('materia-gtk-theme: Matching GTK theme'
+                'kvantum-theme-materia: Materia theme for Kvantum Qt style (recommended)')
+
+    cd ${pkgbase}-${pkgver}
+    install -d "${pkgdir}"/usr/share
+
+    cp -r plasma "${pkgdir}"/usr/share
+    cp -r aurorae "${pkgdir}"/usr/share
+    cp -r color-schemes "${pkgdir}"/usr/share
+    cp -r konsole "${pkgdir}"/usr/share
+    cp -r yakuake "${pkgdir}"/usr/share
+}
+
+package_kvantum-theme-materia-blue() {
+    pkgdesc="Materia theme for KDE Plasma 5, blue accent patch"
+    depends=('kvantum-qt5')
+
+    cd ${pkgbase}-${pkgver}
+    install -d "${pkgdir}"/usr/share
+
+    cp -r Kvantum "${pkgdir}"/usr/share
+}
