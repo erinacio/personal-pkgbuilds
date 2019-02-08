@@ -3,7 +3,7 @@
 
 pkgname=materia-blue-gtk-theme
 _pkgname=materia-gtk-theme
-pkgver=20181125
+pkgver=20190201
 pkgrel=1
 pkgdesc="A Material Design theme for GNOME/GTK+ based desktop environments, blue accent patch"
 arch=('any')
@@ -12,7 +12,7 @@ license=('GPL')
 depends=('gtk3' 'gnome-themes-extra')
 optdepends=('gtk-engine-murrine: for gtk2 theme')
 source=(${pkgname}-${pkgver}.tar.gz::"https://github.com/nana-4/materia-theme/archive/v${pkgver}.tar.gz")
-sha256sums=('50066e40cbfc8e00a995fb73522d1cb6b21b236fa03b4463d9e25a0f5c4fe5bc')
+sha256sums=('f483894a5519cbc5e7e208047f86550d29291a7248372f045950a6849e2c1eb9')
 
 package() {
     cd ${_pkgname/gtk-/}-${pkgver}
