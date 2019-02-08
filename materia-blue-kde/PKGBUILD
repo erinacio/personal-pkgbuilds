@@ -2,7 +2,7 @@
 
 pkgbase=materia-kde
 pkgname=('materia-blue-kde' 'kvantum-theme-materia-blue')
-pkgver=20181225
+pkgver=20190117
 pkgrel=1
 pkgdesc="Materia theme for KDE Plasma 5, blue accent patch"
 arch=('any')
@@ -10,7 +10,7 @@ url="https://github.com/PapirusDevelopmentTeam/${pkgbase}"
 license=('GPL3')
 options=('!strip')
 source=(${pkgbase}-${pkgver}.tar.gz::"${url}/archive/${pkgver}.tar.gz")
-sha256sums=('94ca5bbf708b1af3f4f1e451ea04b396c5e6e688079e010e0d765ca9deefc26e')
+sha256sums=('6c26bfbe16be259910daaf03e17b59e932508ee29e7360d9d4352d61bc40890c')
 
 prepare() {
     if [ -f ${pkgbase}-${pkgver}/.prepared ]; then
@@ -21,6 +21,9 @@ prepare() {
     cd ${pkgbase}-${pkgver}
     touch .prepared
     find . -type f -print -exec sed -i -e 's/#009688/#448aff/g' {} \;
+    find . -type f -print -exec sed -i -e 's/#01a299/#448aff/g' {} \;
+    find . -type f -print -exec sed -i -e 's/0,150,136/68,138,255/g' {} \;
+    find . -type f -print -exec sed -i -e 's/1,162,153/68,138,255/g' {} \;
     find . -type f -print -exec sed -i -e 's/=Materia/=MateriaBlue/g' {} \;
     sed -i -e 's/com.github.varlesh.materia/com.github.varlesh.materiablue/g' plasma/look-and-feel/com.github.varlesh.materia/metadata.desktop
 
