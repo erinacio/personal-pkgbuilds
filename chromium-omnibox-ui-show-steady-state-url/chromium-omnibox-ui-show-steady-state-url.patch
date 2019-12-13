@@ -1,0 +1,25 @@
+diff --git a/chrome/browser/flag-metadata.json b/chrome/browser/flag-metadata.json
+index f0d4c562ff35..ab31c4be72ce 100644
+--- a/chrome/browser/flag-metadata.json
++++ b/chrome/browser/flag-metadata.json
+@@ -2738,17 +2738,17 @@
+   {
+     "name": "omnibox-ui-hide-steady-state-url-path-query-and-ref",
+     "owners": [ "tommycli", "chrome-omnibox-team@google.com" ],
+-    "expiry_milestone": 76
++    "expiry_milestone": 99
+   },
+   {
+     "name": "omnibox-ui-hide-steady-state-url-scheme",
+     "owners": [ "tommycli", "chrome-omnibox-team@google.com" ],
+-    "expiry_milestone": 76
++    "expiry_milestone": 99
+   },
+   {
+     "name": "omnibox-ui-hide-steady-state-url-trivial-subdomains",
+     "owners": [ "tommycli", "chrome-omnibox-team@google.com" ],
+-    "expiry_milestone": 76
++    "expiry_milestone": 99
+   },
+   {
+     "name": "omnibox-ui-max-autocomplete-matches",
