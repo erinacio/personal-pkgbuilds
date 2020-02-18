@@ -5,7 +5,7 @@
 
 _pkgname=chromium
 pkgname=chromium-personal-build
-pkgver=80.0.3987.87
+pkgver=80.0.3987.106
 pkgrel=1
 _launcher_ver=6
 pkgdesc="A web browser built for speed, simplicity, and security"
@@ -26,6 +26,7 @@ optdepends=('pepper-flash: support for Flash content'
 install=chromium.install
 source=(https://commondatastorage.googleapis.com/chromium-browser-official/$_pkgname-$pkgver.tar.xz
         chromium-launcher-$_launcher_ver.tar.gz::https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver.tar.gz
+        chromium-omnibox-ui-show-steady-state-url.patch
         cros-search-service-Include-cmath-for-std-pow.patch
         move-RemoteTreeNode-declaration.patch
         sync-enable-USSPasswords-by-default.patch
@@ -33,12 +34,13 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/$_pkg
         fix-building-with-system-zlib.patch
         remove-verbose-logging-in-local-unique-font-matching.patch
         fix-building-with-unbundled-libxml.patch
-        fix-browser-frame-view-not-getting-a-relayout.patch
+        rename-Relayout-in-DesktopWindowTreeHostPlatform.patch
+        rebuild-Linux-frame-button-cache-when-activation.patch
         chromium-widevine.patch
-        chromium-omnibox-ui-show-steady-state-url.patch
         chromium-skia-harmony.patch)
-sha256sums=('f51f6fca5d9abbef855aa6b5bf427410c6e96ae58b64a7d45f843868cfb0ac8e'
+sha256sums=('2ead924b4414a8a5f085fa0e0df56563ef41bd4290cc403c05d5beec238cbe82'
             '04917e3cd4307d8e31bfb0027a5dce6d086edb10ff8a716024fbb8bb0c7dccf1'
+            'd6b60f4066c10c72e81de42a6b617aa554aaf033c16312f0ad6e0af077c3e289'
             '0a8d1af2a3734b5f99ea8462940e332db4acee7130fe436ad3e4b7ad133e5ae5'
             '21f631851cdcb347f40793485b168cb5d0da65ae26ae39ba58d624c66197d0a5'
             '08ef82476780e0864b5bf7f20eb19db320e73b9a5d4f595351e12e97dda8746f'
@@ -46,9 +48,9 @@ sha256sums=('f51f6fca5d9abbef855aa6b5bf427410c6e96ae58b64a7d45f843868cfb0ac8e'
             '18276e65c68a0c328601b12fefb7e8bfc632346f34b87e64944c9de8c95c5cfa'
             '5bc775c0ece84d67855f51b30eadcf96fa8163b416d2036e9f9ba19072f54dfe'
             'e530d1b39504c2ab247e16f1602359c484e9e8be4ef6d4824d68b14d29a7f60b'
-            '5db225565336a3d9b9e9f341281680433c0b7bb343dff2698b2acffd86585cbe'
+            'ae3bf107834bd8eda9a3ec7899fe35fde62e6111062e5def7d24bf49b53db3db'
+            '46f7fc9768730c460b27681ccf3dc2685c7e1fd22d70d3a82d9e57e3389bb014'
             '709e2fddba3c1f2ed4deb3a239fc0479bfa50c46e054e7f32db4fb1365fed070'
-            '3c2e7805b6c314be207897ca20878ec66867c6b898489cf843652a067713d6e3'
             '771292942c0901092a402cc60ee883877a99fb804cb54d568c8c6c94565a48e1')
 
 # Possible replacements are listed in build/linux/unbundle/replace_gn_files.py
@@ -99,6 +101,9 @@ prepare() {
     third_party/blink/renderer/core/xml/parser/xml_document_parser.cc \
     third_party/libxml/chromium/*.cc
 
+  # delay omnibox-ui-hide-steady-state-url-* flags expiry version
+  patch -Np1 -i ../chromium-omnibox-ui-show-steady-state-url.patch
+
   # https://crbug.com/957519
   patch -Np1 -i ../cros-search-service-Include-cmath-for-std-pow.patch
   patch -Np1 -i ../move-RemoteTreeNode-declaration.patch
@@ -118,15 +123,13 @@ prepare() {
   # https://crbug.com/1043042
   patch -Np1 -i ../fix-building-with-unbundled-libxml.patch
 
-  # https://crbug.com/1046122
-  patch -Np1 -i ../fix-browser-frame-view-not-getting-a-relayout.patch
+  # https://crbug.com/1049258
+  patch -Np1 -i ../rename-Relayout-in-DesktopWindowTreeHostPlatform.patch
+  patch -Np1 -i ../rebuild-Linux-frame-button-cache-when-activation.patch
 
   # Load bundled Widevine CDM if available (see chromium-widevine in the AUR)
   # M79 is supposed to download it as a component but it doesn't seem to work
   patch -Np1 -i ../chromium-widevine.patch
-
-  # delay omnibox-ui-hide-steady-state-url-* flags expiry version
-  patch -Np1 -i ../chromium-omnibox-ui-show-steady-state-url.patch
 
   # https://crbug.com/skia/6663#c10
   patch -Np0 -i ../chromium-skia-harmony.patch
