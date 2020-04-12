@@ -3,7 +3,7 @@
 pkgname=clang8-opt
 pkgdesc="C language family frontend for LLVM, version 8 (installed under /opt/llvm8)"
 pkgver=8.0.1
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://llvm.org/"
 license=('custom:University of Illinois/NCSA Open Source License')
