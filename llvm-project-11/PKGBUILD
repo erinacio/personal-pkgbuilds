@@ -1,0 +1,43 @@
+pkgname=llvm-project-11
+pkgdesc="LLVM project, version 11"
+pkgver=11.1.0
+pkgrel=1
+arch=('x86_64')
+url="https://llvm.org/"
+license=('custom:University of Illinois/NCSA Open Source License')
+groups=('modified')
+depends=('libxml2' 'libedit' 'perl' 'python')
+makedepends=('cmake' 'ninja' 'zlib')
+options=('staticlibs')
+source=(https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-project-$pkgver.src.tar.xz
+        https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/clang-tools-extra-$pkgver.src.tar.xz
+        benchmark-limits.patch)
+sha256sums=('74d2529159fd118c3eac6f90107b5611bccc6f647fdea104024183e8d5e25831'
+            '76707c249de7a9cde3456b960c9a36ed9bbde8e3642c01f0ef61a43d61e0c1a2'
+            'SKIP')
+
+build() {
+  cd "$srcdir/llvm-project-$pkgver.src"
+  patch -p1 -i "$srcdir/benchmark-limits.patch"
+
+  mkdir -p "$srcdir/llvm-project-$pkgver.src/tools"
+  ln -sf "$srcdir/clang-tools-extra-$pkgver.src" "$srcdir/llvm-project-$pkgver.src/tools/extra"
+
+  mkdir -p "$srcdir/llvm-project-$pkgver.src/build"
+  cd "$srcdir/llvm-project-$pkgver.src/build"
+
+  cmake ../llvm \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/lib/llvm-11 \
+    -DCMAKE_C_FLAGS_RELEASE="${CFLAGS} ${CPPFLAGS}" \
+    -DCMAKE_CXX_FLAGS_RELEASE="${CXXFLAGS} ${CPPFLAGS}" \
+    -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;lldb;compiler-rt;lld;polly;clang-tools-extra" \
+    -DLLVM_ENABLE_BINDINGS=OFF \
+    -G "Ninja"
+  ninja
+}
+
+package() {
+  cd "$srcdir/llvm-project-$pkgver.src/build"
+  DESTDIR="$pkgdir/" ninja install
+}
