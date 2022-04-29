@@ -1,7 +1,7 @@
 pkgname=llvm-project-14
 pkgdesc="LLVM project, version 14"
-pkgver=14.0.1
-_pkgtag=llvmorg-14.0.1
+pkgver=14.0.3
+_pkgtag=llvmorg-14.0.3
 pkgrel=1
 arch=('x86_64')
 url="https://llvm.org/"
@@ -12,8 +12,8 @@ makedepends=('cmake' 'ninja' 'zlib')
 options=('staticlibs')
 source=(https://github.com/llvm/llvm-project/releases/download/$_pkgtag/llvm-project-$pkgver.src.tar.xz
         https://github.com/llvm/llvm-project/releases/download/$_pkgtag/clang-tools-extra-$pkgver.src.tar.xz)
-sha256sums=('1a3c2e57916c5a70153aaf0a0e6f1230d6368b9e0f4d04dcb9e039a31b1cd4e6'
-            '69850d0d5b47fe941735f51bbaeffc331a64b3e28f185e807785c2040f9ab944')
+sha256sums=('44d3e7a784d5cf805e72853bb03f218bd1058d448c03ca883dabbebc99204e0c'
+            'f2c85533d586d63784df9d5208e147a35c59a4caed7ff9a0a1f39992a88110a1')
 
 build() {
   mkdir -p "$srcdir/llvm-project-$pkgver.src/tools"
