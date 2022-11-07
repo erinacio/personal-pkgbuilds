@@ -1,7 +1,7 @@
 pkgname=llvm-project-15
 pkgdesc="LLVM project, version 15"
-pkgver=15.0.3
-_pkgtag=llvmorg-15.0.3
+pkgver=15.0.4
+_pkgtag=llvmorg-15.0.4
 pkgrel=1
 arch=('x86_64')
 url="https://llvm.org/"
@@ -13,8 +13,8 @@ options=('staticlibs')
 source=(https://github.com/llvm/llvm-project/releases/download/$_pkgtag/llvm-project-$pkgver.src.tar.xz
         https://github.com/llvm/llvm-project/releases/download/$_pkgtag/clang-tools-extra-$pkgver.src.tar.xz
         file://libcxx-disable-libatomic.patch)
-sha256sums=('dd07bdab557866344d85ae21bbeca5259d37b4b0e2ebf6e0481f42d1ba0fee88'
-            'f0f646e411dfaf174301fa3c80045e768d8778ce4dc84f9966f83bf7dfce75fe'
+sha256sums=('a3112dca9bdea4095361829910b74fb6b9da8ae6e3500db67c43c540ad6072da'
+            '308ff3f25b11b72b969a0a3d9b93fa32035028d6f2475347b9c9458220ed4d0d'
             'SKIP')
 
 prepare() {
@@ -41,6 +41,7 @@ build() {
     -DCLANG_DEFAULT_LINKER=lld \
     -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF \
     -DLIBCXX_USE_COMPILER_RT=ON \
+    -DLIBCXX_INSTALL_INCLUDE_TARGET_DIR=/opt/llvm15/include/c++/v1 \
     -DLIBCXXABI_USE_COMPILER_RT=ON \
     -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
     -DLIBUNWIND_USE_COMPILER_RT=ON \
