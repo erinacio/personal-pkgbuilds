@@ -1,7 +1,7 @@
 pkgname=llvm-project-15
 pkgdesc="LLVM project, version 15"
-pkgver=15.0.5
-_pkgtag=llvmorg-15.0.5
+pkgver=15.0.6
+_pkgtag=llvmorg-15.0.6
 pkgrel=1
 arch=('x86_64')
 url="https://llvm.org/"
@@ -13,8 +13,8 @@ options=('staticlibs')
 source=(https://github.com/llvm/llvm-project/releases/download/$_pkgtag/llvm-project-$pkgver.src.tar.xz
         https://github.com/llvm/llvm-project/releases/download/$_pkgtag/clang-tools-extra-$pkgver.src.tar.xz
         file://libcxx-disable-libatomic.patch)
-sha256sums=('9c4278a6b8884eb7f4ae7dfe3c8e5445019824885e47cfdf1392563c47316fd6'
-            '211399a64cd78105cf032a6c31d9cec9a4de5148439b577752bab5b353d44669'
+sha256sums=('9d53ad04dc60cb7b30e810faf64c5ab8157dadef46c8766f67f286238256ff92'
+            '92b1714294efe13906d3b3f87d3273ea9eb38cb7f3b78631820086f0b0173b25'
             'SKIP')
 
 prepare() {
