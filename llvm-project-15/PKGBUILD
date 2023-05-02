@@ -2,7 +2,7 @@ pkgname=llvm-project-15
 pkgdesc="LLVM project, version 15"
 pkgver=15.0.7
 _pkgtag=llvmorg-15.0.7
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://llvm.org/"
 license=('custom:University of Illinois/NCSA Open Source License')
@@ -32,14 +32,13 @@ build() {
   cmake ../llvm \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/opt/llvm15 \
-    -DCMAKE_C_FLAGS_RELEASE="${CFLAGS} ${CPPFLAGS}" \
-    -DCMAKE_CXX_FLAGS_RELEASE="${CXXFLAGS} ${CPPFLAGS}" \
     -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld;lldb;polly" \
     -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
     -DLLVM_ENABLE_BINDINGS=OFF \
     -DLLVM_ENABLE_ZLIB=ON \
     -DCLANG_DEFAULT_LINKER=lld \
     -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF \
+    -DCOMPILER_RT_USE_LLVM_UNWINDER=ON \
     -DLIBCXX_USE_COMPILER_RT=ON \
     -DLIBCXX_INSTALL_INCLUDE_TARGET_DIR=/opt/llvm15/include/c++/v1 \
     -DLIBCXXABI_USE_COMPILER_RT=ON \
