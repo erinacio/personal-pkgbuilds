@@ -1,19 +1,19 @@
 pkgname=llvm-project-16
 pkgdesc="LLVM project, version 16"
-pkgver=16.0.3
-_pkgtag=llvmorg-16.0.3
+pkgver=16.0.4
+_pkgtag=llvmorg-16.0.4
 pkgrel=1
 arch=('x86_64')
 url="https://llvm.org/"
 license=('custom:University of Illinois/NCSA Open Source License')
-groups=('modified')
+groups=('local')
 depends=('libxml2' 'libedit' 'perl' 'python')
-makedepends=('cmake' 'ninja' 'zlib')
+makedepends=('cmake' 'ninja' 'zlib' 'swig')
 options=('staticlibs')
 source=(https://github.com/llvm/llvm-project/releases/download/$_pkgtag/llvm-project-$pkgver.src.tar.xz
         D139536.patch::'https://reviews.llvm.org/D139536?download=true'
         file://libcxx-disable-libatomic.patch)
-sha256sums=('3b12e35332e10cf650578ae18247b91b04926d5427e1a6ae9a51d170a47cfbb2'
+sha256sums=('cf3c2a1152ed7a99866bd7f12c24528ada6d9f6336afb7a08416938762004c9f'
             'cb4535f00344f7415a64067b08b86d4845a9dffeb05d4755a2bf4ad5ef10bb38'
             'SKIP')
 
