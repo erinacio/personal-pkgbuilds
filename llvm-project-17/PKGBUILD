@@ -1,0 +1,54 @@
+pkgname=llvm-project-17
+pkgdesc="LLVM project, version 17"
+pkgver=17.0.0rc1
+_pkgtag=llvmorg-17.0.0-rc1
+pkgrel=1
+arch=('x86_64')
+url="https://llvm.org/"
+license=('custom:University of Illinois/NCSA Open Source License')
+groups=('local')
+depends=('libxml2' 'libedit' 'perl' 'python')
+makedepends=('cmake' 'ninja' 'zlib' 'swig')
+options=('staticlibs')
+source=(https://github.com/llvm/llvm-project/releases/download/$_pkgtag/llvm-project-$pkgver.src.tar.xz
+        file://libcxx-disable-libatomic.patch)
+sha256sums=('01b80625c131b8281dcf76a4e6395d10f45835c60e27357c92abf5a98c9a0337'
+            'SKIP')
+
+prepare() {
+  cd "$srcdir/llvm-project-$pkgver.src"
+  patch -Np1 -i ../libcxx-disable-libatomic.patch
+}
+
+build() {
+  mkdir -p "$srcdir/llvm-project-$pkgver.src/tools"
+  ln -sf "$srcdir/llvm-project-$pkgver.src/clang-tools-extra" "$srcdir/llvm-project-$pkgver.src/tools/extra"
+
+  mkdir -p "$srcdir/llvm-project-$pkgver.src/build"
+  cd "$srcdir/llvm-project-$pkgver.src/build"
+
+  cmake ../llvm \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/opt/llvm17 \
+    -DLLVM_DEFAULT_TARGET_TRIPLE="x86_64-pc-linux-gnu" \
+    -DLLVM_ENABLE_PER_TARGET_RUNTIME_DIR=OFF \
+    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld;lldb;polly" \
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
+    -DLLVM_ENABLE_BINDINGS=OFF \
+    -DLLVM_ENABLE_ZLIB=ON \
+    -DCLANG_DEFAULT_LINKER=lld \
+    -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+    -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF \
+    -DCOMPILER_RT_USE_LLVM_UNWINDER=ON \
+    -DLIBCXX_USE_COMPILER_RT=ON \
+    -DLIBCXXABI_USE_COMPILER_RT=ON \
+    -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+    -DLIBUNWIND_USE_COMPILER_RT=ON \
+    -G "Ninja"
+  ninja
+}
+
+package() {
+  cd "$srcdir/llvm-project-$pkgver.src/build"
+  DESTDIR="$pkgdir/" ninja install
+}
