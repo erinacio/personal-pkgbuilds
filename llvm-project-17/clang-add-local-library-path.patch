@@ -1,0 +1,15 @@
+diff --git a/clang/lib/Driver/ToolChains/Linux.cpp b/clang/lib/Driver/ToolChains/Linux.cpp
+index 1ba222bf83b1..97dd0970e589 100644
+--- a/clang/lib/Driver/ToolChains/Linux.cpp
++++ b/clang/lib/Driver/ToolChains/Linux.cpp
+@@ -332,6 +332,10 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
+ 
+   Generic_GCC::AddMultiarchPaths(D, SysRoot, OSLibDir, Paths);
+ 
++  if (StringRef(D.Dir).startswith(SysRoot) &&
++      D.getVFS().exists(D.Dir + "/../lib/libc++.so"))
++    addPathIfExists(D, D.Dir + "/../lib", Paths);
++
+   addPathIfExists(D, concat(SysRoot, "/lib"), Paths);
+   addPathIfExists(D, concat(SysRoot, "/usr/lib"), Paths);
+ }
