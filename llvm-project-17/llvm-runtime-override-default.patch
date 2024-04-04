@@ -1,0 +1,103 @@
+diff --git a/compiler-rt/CMakeLists.txt b/compiler-rt/CMakeLists.txt
+index cfa97023d281..0f162bd2818f 100644
+--- a/compiler-rt/CMakeLists.txt
++++ b/compiler-rt/CMakeLists.txt
+@@ -241,7 +241,7 @@ set(CXXLIBS none default libstdc++ libc++)
+ set_property(CACHE SANITIZER_TEST_CXX PROPERTY STRINGS ;${CXXLIBS})
+ handle_default_cxx_lib(SANITIZER_TEST_CXX)
+ 
+-option(COMPILER_RT_USE_LLVM_UNWINDER "Use the LLVM unwinder." OFF)
++option(COMPILER_RT_USE_LLVM_UNWINDER "Use the LLVM unwinder." ON)
+ cmake_dependent_option(COMPILER_RT_ENABLE_STATIC_UNWINDER
+   "Statically link the LLVM unwinder." OFF
+   "COMPILER_RT_USE_LLVM_UNWINDER" OFF)
+diff --git a/compiler-rt/cmake/base-config-ix.cmake b/compiler-rt/cmake/base-config-ix.cmake
+index 9c62320c3922..556a5bbdfa32 100644
+--- a/compiler-rt/cmake/base-config-ix.cmake
++++ b/compiler-rt/cmake/base-config-ix.cmake
+@@ -158,7 +158,7 @@ if(APPLE)
+   option(COMPILER_RT_ENABLE_TVOS "Enable building for tvOS - Experimental" Off)
+ 
+ else()
+-  option(COMPILER_RT_DEFAULT_TARGET_ONLY "Build builtins only for the default target" Off)
++  option(COMPILER_RT_DEFAULT_TARGET_ONLY "Build builtins only for the default target" On)
+ endif()
+ 
+ if(WIN32 AND NOT MINGW AND NOT CYGWIN)
+diff --git a/compiler-rt/lib/builtins/CMakeLists.txt b/compiler-rt/lib/builtins/CMakeLists.txt
+index d62fa0432e2a..2953b8cc4cc6 100644
+--- a/compiler-rt/lib/builtins/CMakeLists.txt
++++ b/compiler-rt/lib/builtins/CMakeLists.txt
+@@ -220,7 +220,7 @@ set(GENERIC_TF_SOURCES
+ 
+ option(COMPILER_RT_EXCLUDE_ATOMIC_BUILTIN
+   "Skip the atomic builtin (these should normally be provided by a shared library)"
+-  On)
++  Off)
+ 
+ if(NOT FUCHSIA AND NOT COMPILER_RT_BAREMETAL_BUILD)
+   set(GENERIC_SOURCES
+diff --git a/libcxx/CMakeLists.txt b/libcxx/CMakeLists.txt
+index b8ac536588d3..4ee1d80f9b21 100644
+--- a/libcxx/CMakeLists.txt
++++ b/libcxx/CMakeLists.txt
+@@ -202,7 +202,7 @@ endif()
+ 
+ set(LIBCXX_ABI_DEFINES "" CACHE STRING "A semicolon separated list of ABI macros to define in the site config header.")
+ set(LIBCXX_EXTRA_SITE_DEFINES "" CACHE STRING "Extra defines to add into __config_site")
+-option(LIBCXX_USE_COMPILER_RT "Use compiler-rt instead of libgcc" OFF)
++option(LIBCXX_USE_COMPILER_RT "Use compiler-rt instead of libgcc" ON)
+ 
+ # ABI Library options ---------------------------------------------------------
+ if (MSVC)
+diff --git a/libcxxabi/CMakeLists.txt b/libcxxabi/CMakeLists.txt
+index f380fe6b6b92..36733300a8d2 100644
+--- a/libcxxabi/CMakeLists.txt
++++ b/libcxxabi/CMakeLists.txt
+@@ -46,9 +46,9 @@ option(LIBCXXABI_ENABLE_EXCEPTIONS
+ option(LIBCXXABI_ENABLE_ASSERTIONS "Enable assertions independent of build mode." ON)
+ option(LIBCXXABI_ENABLE_PEDANTIC "Compile with pedantic enabled." OFF)
+ option(LIBCXXABI_ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
+-option(LIBCXXABI_USE_LLVM_UNWINDER "Build and use the LLVM unwinder." OFF)
++option(LIBCXXABI_USE_LLVM_UNWINDER "Build and use the LLVM unwinder." ON)
+ option(LIBCXXABI_ENABLE_STATIC_UNWINDER "Statically link the LLVM unwinder." OFF)
+-option(LIBCXXABI_USE_COMPILER_RT "Use compiler-rt instead of libgcc" OFF)
++option(LIBCXXABI_USE_COMPILER_RT "Use compiler-rt instead of libgcc" ON)
+ option(LIBCXXABI_ENABLE_THREADS "Build with threads enabled" ON)
+ option(LIBCXXABI_HAS_PTHREAD_API "Ignore auto-detection and force use of pthread API" OFF)
+ option(LIBCXXABI_HAS_WIN32_THREAD_API "Ignore auto-detection and force use of win32 thread API" OFF)
+diff --git a/libunwind/CMakeLists.txt b/libunwind/CMakeLists.txt
+index bc2a820fe98e..94db2218be35 100644
+--- a/libunwind/CMakeLists.txt
++++ b/libunwind/CMakeLists.txt
+@@ -44,7 +44,7 @@ option(LIBUNWIND_ENABLE_CROSS_UNWINDING "Enable cross-platform unwinding support
+ option(LIBUNWIND_ENABLE_ARM_WMMX "Enable unwinding support for ARM WMMX registers." OFF)
+ option(LIBUNWIND_ENABLE_THREADS "Build libunwind with threading support." ON)
+ option(LIBUNWIND_WEAK_PTHREAD_LIB "Use weak references to refer to pthread functions." OFF)
+-option(LIBUNWIND_USE_COMPILER_RT "Use compiler-rt instead of libgcc" OFF)
++option(LIBUNWIND_USE_COMPILER_RT "Use compiler-rt instead of libgcc" ON)
+ option(LIBUNWIND_INCLUDE_DOCS "Build the libunwind documentation." ${LLVM_INCLUDE_DOCS})
+ option(LIBUNWIND_INCLUDE_TESTS "Build the libunwind tests." ${LLVM_INCLUDE_TESTS})
+ option(LIBUNWIND_IS_BAREMETAL "Build libunwind for baremetal targets." OFF)
+diff --git a/runtimes/CMakeLists.txt b/runtimes/CMakeLists.txt
+index 599529852688..ca67362966a4 100644
+--- a/runtimes/CMakeLists.txt
++++ b/runtimes/CMakeLists.txt
+@@ -1,6 +1,8 @@
+ # This file handles building LLVM runtime sub-projects.
+ cmake_minimum_required(VERSION 3.20.0)
+ 
++set(CMAKE_C_COMPILER_TARGET x86_64-pc-linux-gnu)
++
+ # Add path for custom and the LLVM build's modules to the CMake module path.
+ set(LLVM_COMMON_CMAKE_UTILS "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+ include(${LLVM_COMMON_CMAKE_UTILS}/Modules/CMakePolicy.cmake
+@@ -21,7 +23,7 @@ list(INSERT CMAKE_MODULE_PATH 0
+ # on libc++, so we put it after.
+ set(LLVM_DEFAULT_RUNTIMES "libc;libunwind;libcxxabi;pstl;libcxx;compiler-rt;openmp")
+ set(LLVM_SUPPORTED_RUNTIMES "${LLVM_DEFAULT_RUNTIMES};llvm-libgcc")
+-set(LLVM_ENABLE_RUNTIMES "" CACHE STRING
++set(LLVM_ENABLE_RUNTIMES "compiler-rt;libcxx;libcxxabi;libunwind" CACHE STRING
+   "Semicolon-separated list of runtimes to build, or \"all\" (${LLVM_DEFAULT_RUNTIMES}). Supported runtimes are ${LLVM_SUPPORTED_RUNTIMES}.")
+ if(LLVM_ENABLE_RUNTIMES STREQUAL "all" )
+   set(LLVM_ENABLE_RUNTIMES ${LLVM_DEFAULT_RUNTIMES})
